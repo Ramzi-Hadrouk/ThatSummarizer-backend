@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_sections_features_sections",
+  "info": {
+    "displayName": "Features Section",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "feature": {
+      "displayName": "featur",
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.featur"
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}
