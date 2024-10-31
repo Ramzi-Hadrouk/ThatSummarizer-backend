@@ -9,7 +9,7 @@
     "title": {
       "type": "string"
     },
-    "feature": {
+    "features": {
       "displayName": "featur",
       "type": "component",
       "repeatable": true,
