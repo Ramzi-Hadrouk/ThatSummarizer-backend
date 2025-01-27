@@ -1,5 +1,30 @@
 import type { Schema, Attribute } from '@strapi/strapi';
 
+export interface ElementsLink extends Schema.Component {
+  collectionName: 'components_elements_links';
+  info: {
+    displayName: 'Link';
+  };
+  attributes: {
+    name: Attribute.String;
+    url: Attribute.String;
+    isExternal: Attribute.Boolean & Attribute.DefaultTo<false>;
+  };
+}
+
+export interface ElementsFeatur extends Schema.Component {
+  collectionName: 'components_elements_featurs';
+  info: {
+    displayName: 'feature';
+    description: '';
+  };
+  attributes: {
+    heading: Attribute.String;
+    subheading: Attribute.Text;
+    icon: Attribute.Enumeration<['CLOCK_ICON', 'CHECK_ICON', 'CLOUD_ICON']>;
+  };
+}
+
 export interface SectionsHeroSection extends Schema.Component {
   collectionName: 'components_sections_hero_sections';
   info: {
@@ -49,40 +74,15 @@ export interface SectionsFeaturesSection extends Schema.Component {
   };
 }
 
-export interface ElementsLink extends Schema.Component {
-  collectionName: 'components_elements_links';
-  info: {
-    displayName: 'Link';
-  };
-  attributes: {
-    name: Attribute.String;
-    url: Attribute.String;
-    isExternal: Attribute.Boolean & Attribute.DefaultTo<false>;
-  };
-}
-
-export interface ElementsFeatur extends Schema.Component {
-  collectionName: 'components_elements_featurs';
-  info: {
-    displayName: 'feature';
-    description: '';
-  };
-  attributes: {
-    heading: Attribute.String;
-    subheading: Attribute.Text;
-    icon: Attribute.Enumeration<['CLOCK_ICON', 'CHECK_ICON', 'CLOUD_ICON']>;
-  };
-}
-
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
+      'elements.link': ElementsLink;
+      'elements.featur': ElementsFeatur;
       'sections.hero-section': SectionsHeroSection;
       'sections.header': SectionsHeader;
       'sections.footer': SectionsFooter;
       'sections.features-section': SectionsFeaturesSection;
-      'elements.link': ElementsLink;
-      'elements.featur': ElementsFeatur;
     }
   }
 }
