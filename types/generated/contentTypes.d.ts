@@ -435,15 +435,18 @@ export interface ApiSummarySummary extends Schema.CollectionType {
     singularName: 'summary';
     pluralName: 'summaries';
     displayName: 'Summary';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    video_id: Attribute.String;
+    video_id: Attribute.String & Attribute.Required & Attribute.Unique;
     title: Attribute.String;
-    summary: Attribute.RichText;
+    summary: Attribute.RichText & Attribute.Required;
     author_id: Attribute.String;
+    date: Attribute.Date;
+    description: Attribute.Text;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

@@ -4,7 +4,8 @@
   "info": {
     "singularName": "summary",
     "pluralName": "summaries",
-    "displayName": "Summary"
+    "displayName": "Summary",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,16 +13,26 @@
   "pluginOptions": {},
   "attributes": {
     "video_id": {
-      "type": "string"
+      "type": "string",
+      "required": true,
+      "unique": true
     },
     "title": {
       "type": "string"
     },
     "summary": {
-      "type": "richtext"
+      "type": "richtext",
+      "required": true
     },
     "author_id": {
       "type": "string"
+    },
+    "date": {
+      "type": "date",
+      "required": false
+    },
+    "description": {
+      "type": "text"
     }
   }
 }
