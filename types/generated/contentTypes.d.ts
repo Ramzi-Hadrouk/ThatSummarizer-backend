@@ -447,6 +447,7 @@ export interface ApiSummarySummary extends Schema.CollectionType {
     author_id: Attribute.String;
     date: Attribute.Date;
     description: Attribute.Text;
+    category: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
