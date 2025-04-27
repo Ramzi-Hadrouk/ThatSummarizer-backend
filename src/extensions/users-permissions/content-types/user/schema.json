@@ -73,6 +73,12 @@
     },
     "bio": {
       "type": "text"
+    },
+    "summaries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::summary.summary",
+      "mappedBy": "owner"
     }
   }
 }

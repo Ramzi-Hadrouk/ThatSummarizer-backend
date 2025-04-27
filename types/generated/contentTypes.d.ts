@@ -448,6 +448,11 @@ export interface ApiSummarySummary extends Schema.CollectionType {
     date: Attribute.Date;
     description: Attribute.Text;
     category: Attribute.String;
+    owner: Attribute.Relation<
+      'api::summary.summary',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -830,6 +835,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     firstname: Attribute.String;
     lastname: Attribute.String;
     bio: Attribute.Text;
+    summaries: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::summary.summary'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

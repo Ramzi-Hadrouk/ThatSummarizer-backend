@@ -36,6 +36,12 @@
     },
     "category": {
       "type": "string"
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "summaries"
     }
   }
 }
