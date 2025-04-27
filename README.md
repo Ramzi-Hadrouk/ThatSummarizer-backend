@@ -1,4 +1,4 @@
-# That Summerizer ( Backend )
+# That Summarizer ( Backend )
 ## About the Project
 **That Summerizer** : A modern and intuitive web application designed to make summarizing YouTube videos effortless. Simply input a video URL to generate concise, easy-to-read summaries. Enhance your experience by adding personal notes and saving them to your account for seamless access anytime.
 
