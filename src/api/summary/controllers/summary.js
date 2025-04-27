@@ -6,10 +6,13 @@
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-// We still use createCoreController for the basic structure and access to 'strapi'
+
 module.exports = createCoreController('api::summary.summary', ({ strapi }) => ({
+
+  // Keep your existing find method here if you still need it customized
   async find(ctx) {
-    console.log('--- Entering custom summary find controller (Entity Service version) ---');
+    // ... your custom find logic ...
+    console.log('--- Entering custom summary find controller ---');
     const user = ctx.state.user;
 
     if (!user) {
@@ -18,51 +21,112 @@ module.exports = createCoreController('api::summary.summary', ({ strapi }) => ({
     }
     console.log('--- User found in state:', `ID ${user.id} ---`);
 
-    // 1. Extract relevant query parameters directly (filters, sort, populate, pagination)
-    //    Strapi's core controllers use sanitizers/parsers, we'll mimic the essential parts.
     const { filters, sort, pagination, fields, populate } = ctx.query;
 
-    // 2. Prepare the filters for the Entity Service, ensuring our owner filter is included
     const effectiveFilters = {
-      // Spread existing filters from the query, if any
       ...(filters || {}),
-      // Force the owner filter - this overrides any 'owner' filter passed in query
       owner: {
         id: user.id,
       },
     };
 
     console.log('--- Effective filters for Entity Service:', JSON.stringify(effectiveFilters));
-    console.log('--- Other params:', JSON.stringify({ sort, pagination, fields, populate }));
-
 
     try {
-      // 3. Call strapi.entityService.findMany
-      //    Pass the API UID and an object containing filters, sort, etc.
       const entities = await strapi.entityService.findMany('api::summary.summary', {
         filters: effectiveFilters,
         sort: sort,
         pagination: pagination,
-        fields: fields,     // Select specific fields if requested
-        populate: populate, // Populate relations if requested
+        fields: fields,
+        populate: populate,
       });
 
-      // 4. (Optional but Recommended) Sanitize the output like the core controller does
-      //    This removes private fields etc. based on Strapi's sanitization config
       const sanitizedEntities = await this.sanitizeOutput(entities, ctx);
 
-      // 5. Return the sanitized data
-      //    Note: Entity Service findMany doesn't directly return the 'meta' object
-      //    like super.find does. If you need complex pagination metadata,
-      //    you might need to call findAndCount or calculate it manually.
-      //    For simple cases, just returning the data might be enough.
       console.log('--- Entity Service findMany executed successfully ---');
-      return this.transformResponse(sanitizedEntities); // Use transformResponse for standard format
+      return this.transformResponse(sanitizedEntities);
 
     } catch (error) {
       console.error('--- Error calling strapi.entityService.findMany ---', error);
-      // Let Strapi's error handling take over
       throw error;
     }
-  }
+  },
+
+
+  // --- CUSTOM CREATE METHOD ---
+  async create(ctx) {
+    console.log('--- Entering custom summary create controller ---');
+    const user = ctx.state.user;
+
+    // 1. Check if user is authenticated
+    if (!user) {
+      console.log('--- No user found, returning unauthorized ---');
+      return ctx.unauthorized('You must be logged in to create a summary.');
+    }
+    console.log('--- User found in state:', `ID ${user.id} ---`);
+
+    // 2. Get the incoming data from the request body
+    // Strapi's default body parsing handles this
+    let requestData = ctx.request.body.data; // Standard Strapi V4 request body format
+
+    if (!requestData) {
+         console.log('--- No data found in request body ---');
+         return ctx.badRequest('Request body must contain a "data" object.');
+    }
+
+    console.log('--- Incoming data:', JSON.stringify(requestData));
+
+    // 3. Perform custom logic on the data BEFORE creation
+    // Example: Automatically set the owner to the current user
+    requestData.owner = user.id;
+    console.log('--- Data after adding owner:', JSON.stringify(requestData));
+
+    // Example: Add a default value if not provided
+    // if (!requestData.status) {
+    //   requestData.status = 'draft';
+    //   console.log('--- Setting default status to draft ---');
+    // }
+
+    // Example: Basic validation (Strapi's schema validation runs too)
+    // if (!requestData.title) {
+    //    console.log('--- Title is missing ---');
+    //    return ctx.badRequest('Title is required.');
+    // }
+
+
+    try {
+      // 4. Create the entity using strapi.entityService.create
+      // Pass the API UID and the processed data
+      const newEntity = await strapi.entityService.create('api::summary.summary', {
+        data: requestData,
+        // You can add populate here if you want the owner relation etc. in the response
+        // populate: ['owner'],
+      });
+
+      console.log('--- Entity Service create executed successfully ---');
+
+      // 5. (Optional but Recommended) Sanitize the output
+      const sanitizedEntity = await this.sanitizeOutput(newEntity, ctx);
+
+      // 6. Return the created entity in the standard Strapi format
+      return this.transformResponse(sanitizedEntity);
+
+    } catch (error) {
+      console.error('--- Error calling strapi.entityService.create ---', error);
+
+      // You can catch specific errors and return custom responses if needed
+      // For example, if using custom errors:
+      // if (error instanceof StrapiError) {
+      //    return ctx.badRequest(error.message, { details: error.details });
+      // }
+
+      // Otherwise, let Strapi's default error handling manage it
+      throw error;
+    }
+  },
+
+  // You can override other methods like update, delete, findOne similarly
+  // async update(ctx) { ... },
+  // async delete(ctx) { ... },
+  // async findOne(ctx) { ... },
 }));
